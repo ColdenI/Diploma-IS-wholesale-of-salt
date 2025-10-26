@@ -73,7 +73,6 @@
             textBox_login.Name = "textBox_login";
             textBox_login.Size = new Size(440, 31);
             textBox_login.TabIndex = 1;
-            textBox_login.Text = "kozlov";
             // 
             // textBox_password
             // 
@@ -83,7 +82,6 @@
             textBox_password.PasswordChar = '*';
             textBox_password.Size = new Size(440, 31);
             textBox_password.TabIndex = 2;
-            textBox_password.Text = "123456";
             // 
             // AuthForm
             // 
