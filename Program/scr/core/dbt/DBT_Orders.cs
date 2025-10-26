@@ -101,7 +101,29 @@ namespace Program.scr.core.dbt
                 }
             }
             catch { return -1; }
-            return 0;
+
+            int _id = -1;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
+                {
+                    connection.Open();
+                    using (var query = connection.CreateCommand())
+                    {
+                        query.CommandText = "SELECT MAX(ID) FROM Orders;";
+                        using (var reader = query.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                _id = reader.GetInt32(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch { return -1; }
+
+            return _id;
         }
 
         public static int Edit(DBT_Orders obj)

@@ -97,7 +97,15 @@ namespace Program.scr.windows
         private void Button_remove_Click(object? sender, EventArgs e)
         {
             if (MessageBox.Show("Вы уверены что хотите удалить запись?\r\nОтменить будет невозможно!\r\n", "Удалить", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
-            int res = DBT_Orders.Remove((int)dataGridView.CurrentCell.OwningRow.Cells[0].Value);
+            int id = (int)dataGridView.CurrentCell.OwningRow.Cells[0].Value;
+            // вернуть всё на склад по данным из БД
+            foreach (var i in DBT_OrderItems.GetByOrderID(id))
+            {
+                DBT_Stock.DebitFromWarehouse(i.ProductID, -i.Quantity);
+            }
+            // удалить связи
+            DBT_OrderItems.RemoveByOrderId(id);
+            int res = DBT_Orders.Remove(id);
             if (res == -1) MessageBox.Show("Ошибка удаления!");
             else if (res == 0) MessageBox.Show("Успешно удалено!");
             UpdateTable();
@@ -157,7 +165,7 @@ namespace Program.scr.windows
                             string products = string.Empty;
                             decimal total = 0;
                             uint itter = 1;
-                            foreach(var i in DBT_OrderItems.GetByOrderID(reader.GetInt32(1)))
+                            foreach(var i in DBT_OrderItems.GetByOrderID(reader.GetInt32(0)))
                             {
                                 var product = DBT_Products.GetById(i.ProductID);
                                 products += $"{itter} -> {product.Name} | {i.PriceAtOrderTime} руб. * {i.Quantity} {product.UnitOfMeasure} = {i.Subtotal} руб.\n";

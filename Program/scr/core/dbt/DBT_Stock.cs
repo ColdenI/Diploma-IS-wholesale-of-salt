@@ -149,6 +149,27 @@ namespace Program.scr.core.dbt
             return 0;
         }
 
+        public static int DebitFromWarehouse(int ID, decimal value)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
+                {
+                    connection.Open();
+                    using (var query = connection.CreateCommand())
+                    {
+                        query.CommandText = "UPDATE Stock SET QuantityOnStock = QuantityOnStock - @QuantityOnStock, LastUpdated = @LastUpdated WHERE ProductID = @id;";
+                        query.Parameters.AddWithValue("@QuantityOnStock", value);
+                        query.Parameters.AddWithValue("@LastUpdated", DateTime.Now);
+                        query.Parameters.AddWithValue("@id", ID);
+                        query.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch { return -1; }
+            return 0;
+        }
+
         public static int Remove(int id)
         {
             try

@@ -124,12 +124,11 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "INSERT INTO OrderItems VALUES (@OrderID, @ProductID, @Quantity, @PriceAtOrderTime, @Subtotal);";
+                        query.CommandText = "INSERT INTO OrderItems VALUES (@OrderID, @ProductID, @Quantity, @PriceAtOrderTime);";
                         query.Parameters.AddWithValue("@OrderID", obj.OrderID);
                         query.Parameters.AddWithValue("@ProductID", obj.ProductID);
                         query.Parameters.AddWithValue("@Quantity", obj.Quantity);
                         query.Parameters.AddWithValue("@PriceAtOrderTime", obj.PriceAtOrderTime);
-                        query.Parameters.AddWithValue("@Subtotal", obj.Subtotal);
                         query.ExecuteNonQuery();
                     }
                 }
@@ -147,12 +146,11 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "UPDATE OrderItems SET OrderID = @OrderID, ProductID = @ProductID, Quantity = @Quantity, PriceAtOrderTime = @PriceAtOrderTime, Subtotal = @Subtotal WHERE ID = @id;";
+                        query.CommandText = "UPDATE OrderItems SET OrderID = @OrderID, ProductID = @ProductID, Quantity = @Quantity, PriceAtOrderTime = @PriceAtOrderTime WHERE ID = @id;";
                         query.Parameters.AddWithValue("@OrderID", obj.OrderID);
                         query.Parameters.AddWithValue("@ProductID", obj.ProductID);
                         query.Parameters.AddWithValue("@Quantity", obj.Quantity);
                         query.Parameters.AddWithValue("@PriceAtOrderTime", obj.PriceAtOrderTime);
-                        query.Parameters.AddWithValue("@Subtotal", obj.Subtotal);
                         query.Parameters.AddWithValue("@id", obj.ID);
                         query.ExecuteNonQuery();
                     }
@@ -172,6 +170,25 @@ namespace Program.scr.core.dbt
                     using (var query = connection.CreateCommand())
                     {
                         query.CommandText = "DELETE FROM OrderItems WHERE ID = @id;";
+                        query.Parameters.AddWithValue("@id", id);
+                        query.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch { return -1; }
+            return 0;
+        }
+
+        public static int RemoveByOrderId(int id)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
+                {
+                    connection.Open();
+                    using (var query = connection.CreateCommand())
+                    {
+                        query.CommandText = "DELETE FROM OrderItems WHERE OrderID = @id;";
                         query.Parameters.AddWithValue("@id", id);
                         query.ExecuteNonQuery();
                     }

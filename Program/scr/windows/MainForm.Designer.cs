@@ -37,12 +37,14 @@
             button7 = new Button();
             button8 = new Button();
             button9 = new Button();
+            flowLayoutPanel1 = new FlowLayoutPanel();
             label1 = new Label();
+            flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(12, 12);
+            button1.Location = new Point(162, 64);
             button1.Name = "button1";
             button1.Size = new Size(153, 55);
             button1.TabIndex = 0;
@@ -52,7 +54,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(12, 96);
+            button2.Location = new Point(321, 64);
             button2.Name = "button2";
             button2.Size = new Size(153, 55);
             button2.TabIndex = 1;
@@ -62,7 +64,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(12, 166);
+            button3.Location = new Point(3, 125);
             button3.Name = "button3";
             button3.Size = new Size(153, 55);
             button3.TabIndex = 2;
@@ -72,7 +74,7 @@
             // 
             // button4
             // 
-            button4.Location = new Point(12, 246);
+            button4.Location = new Point(162, 125);
             button4.Name = "button4";
             button4.Size = new Size(153, 55);
             button4.TabIndex = 3;
@@ -82,7 +84,7 @@
             // 
             // button5
             // 
-            button5.Location = new Point(12, 332);
+            button5.Location = new Point(321, 125);
             button5.Name = "button5";
             button5.Size = new Size(153, 55);
             button5.TabIndex = 4;
@@ -92,7 +94,7 @@
             // 
             // button6
             // 
-            button6.Location = new Point(324, 198);
+            button6.Location = new Point(162, 3);
             button6.Name = "button6";
             button6.Size = new Size(153, 55);
             button6.TabIndex = 5;
@@ -102,7 +104,7 @@
             // 
             // button7
             // 
-            button7.Location = new Point(324, 270);
+            button7.Location = new Point(3, 64);
             button7.Name = "button7";
             button7.Size = new Size(153, 55);
             button7.TabIndex = 6;
@@ -112,7 +114,7 @@
             // 
             // button8
             // 
-            button8.Location = new Point(500, 198);
+            button8.Location = new Point(321, 3);
             button8.Name = "button8";
             button8.Size = new Size(153, 55);
             button8.TabIndex = 7;
@@ -122,7 +124,7 @@
             // 
             // button9
             // 
-            button9.Location = new Point(336, 111);
+            button9.Location = new Point(3, 3);
             button9.Name = "button9";
             button9.Size = new Size(153, 55);
             button9.TabIndex = 8;
@@ -130,34 +132,46 @@
             button9.UseVisualStyleBackColor = true;
             button9.Click += button9_Click;
             // 
+            // flowLayoutPanel1
+            // 
+            flowLayoutPanel1.AutoScroll = true;
+            flowLayoutPanel1.Controls.Add(button9);
+            flowLayoutPanel1.Controls.Add(button6);
+            flowLayoutPanel1.Controls.Add(button8);
+            flowLayoutPanel1.Controls.Add(button7);
+            flowLayoutPanel1.Controls.Add(button1);
+            flowLayoutPanel1.Controls.Add(button2);
+            flowLayoutPanel1.Controls.Add(button3);
+            flowLayoutPanel1.Controls.Add(button4);
+            flowLayoutPanel1.Controls.Add(button5);
+            flowLayoutPanel1.Location = new Point(16, 44);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(484, 192);
+            flowLayoutPanel1.TabIndex = 9;
+            // 
             // label1
             // 
-            label1.Location = new Point(283, 416);
+            label1.AutoSize = true;
+            label1.Location = new Point(16, 10);
             label1.Name = "label1";
             label1.Size = new Size(45, 19);
-            label1.TabIndex = 9;
+            label1.TabIndex = 10;
             label1.Text = "label1";
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(759, 487);
+            ClientSize = new Size(514, 249);
             Controls.Add(label1);
-            Controls.Add(button9);
-            Controls.Add(button8);
-            Controls.Add(button7);
-            Controls.Add(button6);
-            Controls.Add(button5);
-            Controls.Add(button4);
-            Controls.Add(button3);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            Controls.Add(flowLayoutPanel1);
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Главное окно";
             FormClosed += MainForm_FormClosed;
+            flowLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -171,6 +185,7 @@
         private Button button7;
         private Button button8;
         private Button button9;
+        private FlowLayoutPanel flowLayoutPanel1;
         private Label label1;
     }
 }

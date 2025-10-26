@@ -34,7 +34,7 @@
             {
                 DecimalPlaces = 4,
                 Minimum = 0,
-                Maximum = Math.Max(1.0000m, maximum), // Ограничиваем минимумом, чтобы не было <= 0
+                Maximum = Math.Max(0, maximum), // Ограничиваем минимумом, чтобы не было <= 0
                 Increment = 1.0000m,
                 Value = Math.Min(Math.Max(0, value), maximum), // Значение в пределах [min, max]
                 Width = 120,
@@ -46,8 +46,9 @@
                 Anchor = AnchorStyles.Right | AnchorStyles.Top                
             };
             numericUpDown.ValueChanged += (object? sender, EventArgs e) => 
-            { 
-                numericUpDown.BackColor = numericUpDown.Value == 0 ? Color.White : Color.LightGreen;
+            {
+                numericUpDown.BackColor = numericUpDown.Maximum == 0 ? Color.IndianRed : Color.White;
+                numericUpDown.BackColor = numericUpDown.Value == 0 ? Color.White : Color.LightGreen;            
                 onValueChanged?.Invoke(Id, Key, numericUpDown.Value);
             };
 

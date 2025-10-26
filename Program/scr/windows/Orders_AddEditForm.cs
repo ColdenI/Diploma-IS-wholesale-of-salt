@@ -25,7 +25,7 @@ namespace Program.scr.windows
             InitializeComponent();
             Init();
 
-            foreach(var i in DBT_Products.GetAll()) customListBox.Add(i.ID, i.Name, 0, DBT_Stock.GetByProductID(i.ID).QuantityOnStock);   
+            foreach (var i in DBT_Products.GetAll()) customListBox.Add(i.ID, i.Name, 0, DBT_Stock.GetByProductID(i.ID).QuantityOnStock);
         }
         public Orders_AddEditForm(DBT_Orders obj)
         {
@@ -50,12 +50,12 @@ namespace Program.scr.windows
                 var result = DBT_OrderItems.GetByOrderIDAndProductID(obj.ID, i.ID);
                 decimal value = 0;
                 if (result != null) if (result.Count > 0) if (result[0] != null) value = result[0].Quantity;
-                customListBox.Add(i.ID, i.Name, value, DBT_Stock.GetByProductID(i.ID).QuantityOnStock);
+                customListBox.Add(i.ID, i.Name, value, DBT_Stock.GetByProductID(i.ID).QuantityOnStock + value);
             }
 
-            foreach(var i in customListBox.Items) i.numericUpDown.Enabled = false;
-            comboBox_ClientID.Enabled = false;
-            comboBox_EmployeeID.Enabled = false;
+            //foreach (var i in customListBox.Items) i.numericUpDown.Enabled = false;
+            //comboBox_ClientID.Enabled = false;
+            //comboBox_EmployeeID.Enabled = false;
         }
 
         private void Init()
@@ -214,8 +214,30 @@ namespace Program.scr.windows
                         Status = textBox_Status.Text
                     }
                 );
+                if (res == -1)
+                {
+                    MessageBox.Show("Ошибка! Один из ID не ссылается на запись в БД!");
+                    return;
+                }
 
+                foreach (var i in customListBox.Items)
+                {
+                    if (i.Value == 0) continue;
 
+                    // списать со склада
+                    DBT_Stock.DebitFromWarehouse(i.Id, i.Value);
+
+                    // добавить записи в orderItems
+                    DBT_OrderItems.Create(
+                        new DBT_OrderItems()
+                        {
+                            OrderID = res,
+                            ProductID = i.Id,
+                            Quantity = i.Value,
+                            PriceAtOrderTime = DBT_Products.GetById(i.Id).PricePerUnit
+                        }
+                        );
+                }
             }
             else
             {
@@ -230,9 +252,42 @@ namespace Program.scr.windows
                         Status = textBox_Status.Text
                     }
                 );
+
+                // вернуть всё на склад по данным из БД
+                foreach (var i in DBT_OrderItems.GetByOrderID(Object.ID))
+                {
+                    DBT_Stock.DebitFromWarehouse(i.ProductID, -i.Quantity);
+                }
+
+                // удалить связи
+                DBT_OrderItems.RemoveByOrderId(Object.ID);
+
+                foreach (var i in customListBox.Items)
+                {
+                    if (i.Value == 0) continue;
+
+                    // списать со склада
+                    DBT_Stock.DebitFromWarehouse(i.Id, i.Value);
+
+                    // добавить записи в orderItems
+                    DBT_OrderItems.Create(
+                        new DBT_OrderItems()
+                        {
+                            OrderID = Object.ID,
+                            ProductID = i.Id,
+                            Quantity = i.Value,
+                            PriceAtOrderTime = DBT_Products.GetById(i.Id).PricePerUnit
+                        }
+                        );
+                }
             }
             if (res == -1) MessageBox.Show("Ошибка! Один из ID не ссылается на запись в БД!");
             else this.Close();
+        }
+
+        public void DebitFromWarehouse()
+        {
+
         }
     }
 }

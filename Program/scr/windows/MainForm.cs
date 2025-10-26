@@ -5,6 +5,46 @@
         public MainForm()
         {
             InitializeComponent();
+
+            button1.Visible = false;
+            button2.Visible = false;
+            button3.Visible = false;
+            button4.Visible = false;
+            button5.Visible = false;
+            button6.Visible = false;
+            button7.Visible = false;
+            button8.Visible = false;
+            button9.Visible = false;
+
+            if (core.Core.AccessLevel == 0)
+            {
+                button1.Visible = true;
+                button2.Visible = true;
+                button3.Visible = true;
+                button4.Visible = true;
+                button5.Visible = true;
+                button6.Visible = true;
+                button7.Visible = true;
+                button8.Visible = true;
+                button9.Visible = true;
+            }
+            if (core.Core.AccessLevel == 1)
+            {
+                button1.Visible = true;
+                button4.Visible = true;
+                button5.Visible = true;
+                button8.Visible = true;
+                button9.Visible = true;
+            }
+            if (core.Core.AccessLevel == 2)
+            {
+                button2.Visible = true;
+                button4.Visible = true;
+                button6.Visible = true;
+                button7.Visible = true;
+            }
+
+            label1.Text = $"Добро пожаловать, {core.Core.ThisEmployee.FullName}";
         }
 
         private void button1_Click(object sender, EventArgs e)
