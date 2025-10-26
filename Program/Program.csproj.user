@@ -1,7 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Compile Update="scr\windows\Form1.cs">
+    <Compile Update="scr\windows\AuthForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Auth_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Auth_ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Clients_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Clients_ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Employees_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Employees_ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Orders_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Orders_ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Products_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Products_ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\ProvidedServices_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\ProvidedServices_ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Services_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Services_ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Stock_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Stock_ViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Suppliers_AddEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="scr\windows\Suppliers_ViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
