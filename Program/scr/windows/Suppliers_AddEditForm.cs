@@ -35,7 +35,8 @@ namespace Program.scr.windows
 
         private void Init()
         {
-            this.Text = "Поставщики - " + Object == null ? "Добавить" : "Изменить";
+            this.Size = new Size(1200, 650);
+            this.Text = "Поставщики - " + (Object == null ? "Добавить" : "Изменить").ToString();
             this.MinimumSize = new Size(400, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
             button_apply = new Button()
@@ -79,7 +80,7 @@ namespace Program.scr.windows
             tableLayout.Controls.Add(textBox_Phone, 1, 2);
 
             Label label_Email = new Label();
-            SetLabel(ref label_Email, "Email");
+            SetLabel(ref label_Email, "Электронная почта");
             tableLayout.Controls.Add(label_Email, 0, 3);
             textBox_Email = new TextBox();
             textBox_Email.Dock = DockStyle.Fill;

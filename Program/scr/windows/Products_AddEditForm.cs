@@ -1,13 +1,4 @@
 ﻿using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Program.scr.windows
 {
@@ -18,12 +9,14 @@ namespace Program.scr.windows
         Button button_apply;
         TableLayoutPanel tableLayout;
 
-        TextBox textBox_SupplierID;
+        ComboBox comboBox_SupplierID;
         TextBox textBox_Name;
         TextBox textBox_Category;
         TextBox textBox_UnitOfMeasure;
         TextBox textBox_PricePerUnit;
         TextBox textBox_Description;
+
+        private List<DBT_Suppliers> Suppliers = new List<DBT_Suppliers>();
 
         public Products_AddEditForm()
         {
@@ -36,7 +29,7 @@ namespace Program.scr.windows
             Object = obj;
             Init();
 
-            textBox_SupplierID.Text = obj.SupplierID.ToString();
+            comboBox_SupplierID.SelectedIndex = indexOf_Suppliers(obj.SupplierID);
             textBox_Name.Text = obj.Name.ToString();
             textBox_Category.Text = obj.Category.ToString();
             textBox_UnitOfMeasure.Text = obj.UnitOfMeasure.ToString();
@@ -46,7 +39,8 @@ namespace Program.scr.windows
 
         private void Init()
         {
-            this.Text = "Товары - " + Object == null ? "Добавить" : "Изменить";
+            this.Size = new Size(1200, 650);
+            this.Text = "Товары - " + (Object == null ? "Добавить" : "Изменить").ToString();
             this.MinimumSize = new Size(400, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
             button_apply = new Button()
@@ -68,10 +62,11 @@ namespace Program.scr.windows
             Label label_SupplierID = new Label();
             SetLabel(ref label_SupplierID, "Поставщик");
             tableLayout.Controls.Add(label_SupplierID, 0, 0);
-            textBox_SupplierID = new TextBox();
-            textBox_SupplierID.Dock = DockStyle.Fill;
-            textBox_SupplierID.MaxLength = 254;
-            tableLayout.Controls.Add(textBox_SupplierID, 1, 0);
+            comboBox_SupplierID = new ComboBox();
+            comboBox_SupplierID.Dock = DockStyle.Fill;
+            comboBox_SupplierID.MaxLength = 254;
+            tableLayout.Controls.Add(comboBox_SupplierID, 1, 0);
+            LoadComboBox_Suppliers();
 
             Label label_Name = new Label();
             SetLabel(ref label_Name, "Наименование");
@@ -116,6 +111,23 @@ namespace Program.scr.windows
             this.Controls.Add(tableLayout);
         }
 
+        private void LoadComboBox_Suppliers()
+        {
+            Suppliers = DBT_Suppliers.GetAll();
+
+            comboBox_SupplierID.Items.Clear();
+            foreach (var i in Suppliers)
+                comboBox_SupplierID.Items.Add(i.CompanyName);
+        }
+        private int indexOf_Suppliers(int id)
+        {
+            for (int i = 0; i < Suppliers.Count; i++)
+            {
+                if (Suppliers[i].ID == id) return i;
+            }
+            return -1;
+        }
+
         private void SetLabel(ref Label label, string text = "")
         {
             label.Font = new Font(Font.FontFamily, 12);
@@ -128,7 +140,7 @@ namespace Program.scr.windows
 
         private void Button_apply_Click(object? sender, EventArgs e)
         {
-            if (!int.TryParse(textBox_SupplierID.Text, out int tp_SupplierID)) { MessageBox.Show("Поле 'Поставщик' имеет некорректное значение!"); return; }
+            if (comboBox_SupplierID.SelectedIndex == -1) { MessageBox.Show("Поле 'Поставщик' имеет некорректное значение!"); return; }
             if (string.IsNullOrWhiteSpace(textBox_Name.Text)) { MessageBox.Show("Поле 'Наименование' имеет некорректное значение!"); return; }
             if (!decimal.TryParse(textBox_PricePerUnit.Text, out decimal tp_PricePerUnit)) { MessageBox.Show("Поле 'Цена за ед. товара' имеет некорректное значение!"); return; }
 
@@ -139,7 +151,7 @@ namespace Program.scr.windows
                 res = DBT_Products.Create(
                     new DBT_Products()
                     {
-                        SupplierID = int.Parse(textBox_SupplierID.Text),
+                        SupplierID = Suppliers[comboBox_SupplierID.SelectedIndex].ID,
                         Name = textBox_Name.Text,
                         Category = textBox_Category.Text,
                         UnitOfMeasure = textBox_UnitOfMeasure.Text,
@@ -154,7 +166,7 @@ namespace Program.scr.windows
                     new DBT_Products()
                     {
                         ID = Object.ID,
-                        SupplierID = int.Parse(textBox_SupplierID.Text),
+                        SupplierID = Suppliers[comboBox_SupplierID.SelectedIndex].ID,
                         Name = textBox_Name.Text,
                         Category = textBox_Category.Text,
                         UnitOfMeasure = textBox_UnitOfMeasure.Text,

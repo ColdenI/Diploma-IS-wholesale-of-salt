@@ -1,15 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Program.scr.core;
 using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Program.scr.windows
 {
@@ -30,6 +21,7 @@ namespace Program.scr.windows
             this.Disposed += ProvidedServices_ViewForm_Disposed;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.Size = new Size(1200, 650);
             this.Text = "Оказанные услуги";
 
             button_create = new Button()
@@ -75,7 +67,7 @@ namespace Program.scr.windows
             this.Controls.Add(button_edit);
             this.Controls.Add(button_remove);
             this.Controls.Add(button_update);
-            this.Controls.Add(textBox_search);
+            //this.Controls.Add(textBox_search);
             this.Controls.Add(dataGridView);
         }
 
@@ -130,7 +122,7 @@ namespace Program.scr.windows
             dataGridView.Columns.Add("ClientID", "Клиент");
             dataGridView.Columns.Add("EmployeeID", "Сотрудник");
             dataGridView.Columns.Add("ServiceID", "Услуга");
-            dataGridView.Columns.Add("ServiceDateTime", "Дата оказания услуги");
+            dataGridView.Columns.Add("ServiceDateTime", "Дата оказания");
             dataGridView.Columns.Add("Status", "Статус");
 
             using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
@@ -156,9 +148,9 @@ namespace Program.scr.windows
 
                             var index = dataGridView.Rows.Add();
                             dataGridView.Rows[index].Cells[0].Value = reader.GetInt32(0);
-                            dataGridView.Rows[index].Cells[1].Value = reader.GetInt32(1);
-                            dataGridView.Rows[index].Cells[2].Value = reader.GetInt32(2);
-                            dataGridView.Rows[index].Cells[3].Value = reader.GetInt32(3);
+                            dataGridView.Rows[index].Cells[1].Value = DBT_Clients.GetById(reader.GetInt32(1)).FullName;
+                            dataGridView.Rows[index].Cells[2].Value = DBT_Employees.GetById(reader.GetInt32(2)).FullName;
+                            dataGridView.Rows[index].Cells[3].Value = DBT_Services.GetById(reader.GetInt32(3)).Name;
                             dataGridView.Rows[index].Cells[4].Value = DateTime.Parse(reader.GetValue(4).ToString());
                             dataGridView.Rows[index].Cells[5].Value = reader.GetString(5);
 

@@ -1,13 +1,4 @@
 ﻿using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Program.scr.windows
 {
@@ -44,7 +35,8 @@ namespace Program.scr.windows
 
         private void Init()
         {
-            this.Text = "Клиенты - " + Object == null ? "Добавить" : "Изменить";
+            this.Size = new Size(1200, 650);
+            this.Text = "Клиенты - " + (Object == null ? "Добавить" : "Изменить").ToString();
             this.MinimumSize = new Size(400, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
             button_apply = new Button()
@@ -64,7 +56,7 @@ namespace Program.scr.windows
             };
 
             Label label_FullName = new Label();
-            SetLabel(ref label_FullName, "ФИО");
+            SetLabel(ref label_FullName, "Организация");
             tableLayout.Controls.Add(label_FullName, 0, 0);
             textBox_FullName = new TextBox();
             textBox_FullName.Dock = DockStyle.Fill;
@@ -118,7 +110,7 @@ namespace Program.scr.windows
 
         private void Button_apply_Click(object? sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(textBox_FullName.Text)) { MessageBox.Show("Поле 'ФИО' имеет некорректное значение!"); return; }
+            if (string.IsNullOrWhiteSpace(textBox_FullName.Text)) { MessageBox.Show("Поле 'Организация' имеет некорректное значение!"); return; }
 
             int res = 0;
 

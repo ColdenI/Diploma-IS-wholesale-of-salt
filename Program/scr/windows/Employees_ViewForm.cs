@@ -1,15 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Program.scr.core;
 using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Program.scr.windows
 {
@@ -30,6 +21,7 @@ namespace Program.scr.windows
             this.Disposed += Employees_ViewForm_Disposed;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.Size = new Size(1200, 650);
             this.Text = "Сотрудники";
 
             button_create = new Button()
@@ -171,6 +163,4 @@ namespace Program.scr.windows
             }
         }
     }
-
-
 }

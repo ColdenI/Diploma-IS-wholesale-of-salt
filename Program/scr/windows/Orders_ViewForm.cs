@@ -1,15 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Program.scr.core;
 using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Program.scr.windows
 {
@@ -30,6 +21,7 @@ namespace Program.scr.windows
             this.Disposed += Orders_ViewForm_Disposed;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.Size = new Size(1200, 650);
             this.Text = "Заказы";
 
             button_create = new Button()
@@ -126,12 +118,13 @@ namespace Program.scr.windows
             dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            dataGridView.Columns.Add("ID", "ID");
+            dataGridView.Columns.Add("ID", "ID"); 
             dataGridView.Columns.Add("ClientID", "Клиент");
             dataGridView.Columns.Add("EmployeeID", "Сотрудник");
             dataGridView.Columns.Add("OrderDateTime", "Дата заказа");
-            dataGridView.Columns.Add("TotalAmount", "Сумма заказа");
+            dataGridView.Columns.Add("TotalAmount", "Сумма заказа"); 
             dataGridView.Columns.Add("Status", "Статус");
+            dataGridView.Columns.Add("Products", "Товары"); dataGridView.Columns[6].Width = 600;
 
             using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
             {
@@ -156,11 +149,23 @@ namespace Program.scr.windows
 
                             var index = dataGridView.Rows.Add();
                             dataGridView.Rows[index].Cells[0].Value = reader.GetInt32(0);
-                            dataGridView.Rows[index].Cells[1].Value = reader.GetInt32(1);
-                            dataGridView.Rows[index].Cells[2].Value = reader.GetInt32(2);
+                            dataGridView.Rows[index].Cells[1].Value = DBT_Clients.GetById(reader.GetInt32(1)).FullName;
+                            dataGridView.Rows[index].Cells[2].Value = DBT_Employees.GetById(reader.GetInt32(2)).FullName;
                             dataGridView.Rows[index].Cells[3].Value = DateTime.Parse(reader.GetValue(3).ToString());
-                            dataGridView.Rows[index].Cells[4].Value = reader.GetDecimal(4);
+                            //dataGridView.Rows[index].Cells[4].Value = reader.GetDecimal(4);
                             dataGridView.Rows[index].Cells[5].Value = reader.GetString(5);
+                            string products = string.Empty;
+                            decimal total = 0;
+                            uint itter = 1;
+                            foreach(var i in DBT_OrderItems.GetByOrderID(reader.GetInt32(1)))
+                            {
+                                var product = DBT_Products.GetById(i.ProductID);
+                                products += $"{itter} -> {product.Name} | {i.PriceAtOrderTime} руб. * {i.Quantity} {product.UnitOfMeasure} = {i.Subtotal} руб.\n";
+                                total += (decimal)i.Subtotal;
+                                itter++;
+                            }
+                            dataGridView.Rows[index].Cells[6].Value = products;
+                            dataGridView.Rows[index].Cells[4].Value = total;
 
                         }
                     }

@@ -1,15 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Program.scr.core;
 using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Program.scr.windows
 {
@@ -30,6 +21,7 @@ namespace Program.scr.windows
             this.Disposed += Clients_ViewForm_Disposed;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.Size = new Size(1200, 650);
             this.Text = "Клиенты";
 
             button_create = new Button()
@@ -127,7 +119,7 @@ namespace Program.scr.windows
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             dataGridView.Columns.Add("ID", "ID");
-            dataGridView.Columns.Add("FullName", "ФИО");
+            dataGridView.Columns.Add("FullName", "Организация");
             dataGridView.Columns.Add("ContactPerson", "Контактное лицо");
             dataGridView.Columns.Add("Phone", "Номер телефона");
             dataGridView.Columns.Add("Email", "Электронная почта");

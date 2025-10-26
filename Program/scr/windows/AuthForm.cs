@@ -57,7 +57,7 @@ namespace Program
                                     Core.AccessLevel = DBT_Auth.GetById(reader.GetInt32(0)).AccessLevel;
                                     if (Core.AccessLevel == -1)
                                     {
-                                        MessageBox.Show("Пользователь заблокирован");
+                                        MessageBox.Show("Пользователь не имеет доступа");
                                         return;
                                     }
                                     if (Core.ThisEmployee == null)

@@ -1,13 +1,5 @@
 ﻿using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Program.scr.windows.customListBox;
 
 namespace Program.scr.windows
 {
@@ -18,16 +10,22 @@ namespace Program.scr.windows
         Button button_apply;
         TableLayoutPanel tableLayout;
 
-        TextBox textBox_ClientID;
-        TextBox textBox_EmployeeID;
+        ComboBox comboBox_ClientID;
+        ComboBox comboBox_EmployeeID;
         DateTimePicker dateTimePicker_OrderDateTime;
         TextBox textBox_TotalAmount;
         TextBox textBox_Status;
+        CustomNumericListBox customListBox;
+
+        private List<DBT_Clients> Clients = new List<DBT_Clients>();
+        private List<DBT_Employees> Employees = new List<DBT_Employees>();
 
         public Orders_AddEditForm()
         {
             InitializeComponent();
             Init();
+
+            foreach(var i in DBT_Products.GetAll()) customListBox.Add(i.ID, i.Name, 0, DBT_Stock.GetByProductID(i.ID).QuantityOnStock);   
         }
         public Orders_AddEditForm(DBT_Orders obj)
         {
@@ -35,16 +33,35 @@ namespace Program.scr.windows
             Object = obj;
             Init();
 
-            textBox_ClientID.Text = obj.ClientID.ToString();
-            textBox_EmployeeID.Text = obj.EmployeeID.ToString();
+            comboBox_ClientID.SelectedIndex = indexOf_Clients(obj.ClientID);
+            comboBox_EmployeeID.SelectedIndex = indexOf_Employees(obj.EmployeeID);
             dateTimePicker_OrderDateTime.Value = (DateTime)((obj.OrderDateTime == null) ? DateTime.Now : obj.OrderDateTime);
-            textBox_TotalAmount.Text = obj.TotalAmount.ToString();
+            decimal total = 0;
+            foreach (var i in DBT_OrderItems.GetByOrderID(obj.ID))
+            {
+                var product = DBT_Products.GetById(i.ProductID);
+                total += (decimal)i.Subtotal;
+            }
+            textBox_TotalAmount.Text = total.ToString();
             textBox_Status.Text = obj.Status.ToString();
+
+            foreach (var i in DBT_Products.GetAll())
+            {
+                var result = DBT_OrderItems.GetByOrderIDAndProductID(obj.ID, i.ID);
+                decimal value = 0;
+                if (result != null) if (result.Count > 0) if (result[0] != null) value = result[0].Quantity;
+                customListBox.Add(i.ID, i.Name, value, DBT_Stock.GetByProductID(i.ID).QuantityOnStock);
+            }
+
+            foreach(var i in customListBox.Items) i.numericUpDown.Enabled = false;
+            comboBox_ClientID.Enabled = false;
+            comboBox_EmployeeID.Enabled = false;
         }
 
         private void Init()
         {
-            this.Text = "Заказы - " + Object == null ? "Добавить" : "Изменить";
+            this.Size = new Size(1200, 650);
+            this.Text = "Заказы - " + (Object == null ? "Добавить" : "Изменить").ToString();
             this.MinimumSize = new Size(400, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
             button_apply = new Button()
@@ -58,26 +75,27 @@ namespace Program.scr.windows
 
             tableLayout = new TableLayoutPanel()
             {
-                Dock = DockStyle.Fill,
+                Dock = DockStyle.Top,
+                Height = 190,
                 ColumnCount = 2,
-                RowCount = 5
+                RowCount = 6
             };
 
             Label label_ClientID = new Label();
             SetLabel(ref label_ClientID, "Клиент");
             tableLayout.Controls.Add(label_ClientID, 0, 0);
-            textBox_ClientID = new TextBox();
-            textBox_ClientID.Dock = DockStyle.Fill;
-            textBox_ClientID.MaxLength = 254;
-            tableLayout.Controls.Add(textBox_ClientID, 1, 0);
+            comboBox_ClientID = new ComboBox();
+            comboBox_ClientID.Dock = DockStyle.Fill;
+            comboBox_ClientID.MaxLength = 254;
+            tableLayout.Controls.Add(comboBox_ClientID, 1, 0);
 
             Label label_EmployeeID = new Label();
             SetLabel(ref label_EmployeeID, "Сотрудник");
             tableLayout.Controls.Add(label_EmployeeID, 0, 1);
-            textBox_EmployeeID = new TextBox();
-            textBox_EmployeeID.Dock = DockStyle.Fill;
-            textBox_EmployeeID.MaxLength = 254;
-            tableLayout.Controls.Add(textBox_EmployeeID, 1, 1);
+            comboBox_EmployeeID = new ComboBox();
+            comboBox_EmployeeID.Dock = DockStyle.Fill;
+            comboBox_EmployeeID.MaxLength = 254;
+            tableLayout.Controls.Add(comboBox_EmployeeID, 1, 1);
 
             Label label_OrderDateTime = new Label();
             SetLabel(ref label_OrderDateTime, "Дата заказа");
@@ -92,6 +110,7 @@ namespace Program.scr.windows
             SetLabel(ref label_TotalAmount, "Сумма заказа");
             tableLayout.Controls.Add(label_TotalAmount, 0, 3);
             textBox_TotalAmount = new TextBox();
+            textBox_TotalAmount.ReadOnly = true;
             textBox_TotalAmount.Dock = DockStyle.Fill;
             textBox_TotalAmount.MaxLength = 254;
             tableLayout.Controls.Add(textBox_TotalAmount, 1, 3);
@@ -104,7 +123,64 @@ namespace Program.scr.windows
             textBox_Status.MaxLength = 254;
             tableLayout.Controls.Add(textBox_Status, 1, 4);
 
+            Label label_Products = new Label();
+            SetLabel(ref label_Products, "Товары");
+            tableLayout.Controls.Add(label_Products, 0, 5);
+
+            customListBox = new CustomNumericListBox();
+            customListBox.Dock = DockStyle.Fill;
+            customListBox.Width = 400;
+            customListBox.ValueChanged += (sender, e) =>
+            {
+                decimal total = 0;
+                foreach (var i in customListBox.Items)
+                {
+                    total += i.Value * DBT_Products.GetById(i.Id).PricePerUnit;
+                }
+                total = Math.Round(total, 2);
+                textBox_TotalAmount.Text = total.ToString();
+            };
+            this.Controls.Add(customListBox);
+
+
             this.Controls.Add(tableLayout);
+            this.Controls.Add(button_apply);
+
+            LoadComboBox_Clients();
+            LoadComboBox_Employees();
+        }
+
+        private void LoadComboBox_Clients()
+        {
+            Clients = DBT_Clients.GetAll();
+
+            comboBox_ClientID.Items.Clear();
+            foreach (var i in Clients)
+                comboBox_ClientID.Items.Add(i.FullName);
+        }
+        private int indexOf_Clients(int id)
+        {
+            for (int i = 0; i < Clients.Count; i++)
+            {
+                if (Clients[i].ID == id) return i;
+            }
+            return -1;
+        }
+        private void LoadComboBox_Employees()
+        {
+            Employees = DBT_Employees.GetAll();
+
+            comboBox_EmployeeID.Items.Clear();
+            foreach (var i in Employees)
+                comboBox_EmployeeID.Items.Add(i.FullName);
+        }
+        private int indexOf_Employees(int id)
+        {
+            for (int i = 0; i < Employees.Count; i++)
+            {
+                if (Employees[i].ID == id) return i;
+            }
+            return -1;
         }
 
         private void SetLabel(ref Label label, string text = "")
@@ -119,8 +195,8 @@ namespace Program.scr.windows
 
         private void Button_apply_Click(object? sender, EventArgs e)
         {
-            if (!int.TryParse(textBox_ClientID.Text, out int tp_ClientID)) { MessageBox.Show("Поле 'Клиент' имеет некорректное значение!"); return; }
-            if (!int.TryParse(textBox_EmployeeID.Text, out int tp_EmployeeID)) { MessageBox.Show("Поле 'Сотрудник' имеет некорректное значение!"); return; }
+            if (comboBox_ClientID.SelectedIndex == -1) { MessageBox.Show("Поле 'Клиент' имеет некорректное значение!"); return; }
+            if (comboBox_EmployeeID.SelectedIndex == -1) { MessageBox.Show("Поле 'Сотрудник' имеет некорректное значение!"); return; }
             if (!decimal.TryParse(textBox_TotalAmount.Text, out decimal tp_TotalAmount)) { MessageBox.Show("Поле 'Сумма заказа' имеет некорректное значение!"); return; }
             if (string.IsNullOrWhiteSpace(textBox_Status.Text)) { MessageBox.Show("Поле 'Статус' имеет некорректное значение!"); return; }
 
@@ -131,13 +207,15 @@ namespace Program.scr.windows
                 res = DBT_Orders.Create(
                     new DBT_Orders()
                     {
-                        ClientID = int.Parse(textBox_ClientID.Text),
-                        EmployeeID = int.Parse(textBox_EmployeeID.Text),
+                        ClientID = Clients[comboBox_ClientID.SelectedIndex].ID,
+                        EmployeeID = Employees[comboBox_EmployeeID.SelectedIndex].ID,
                         OrderDateTime = dateTimePicker_OrderDateTime.Value,
                         TotalAmount = decimal.Parse(textBox_TotalAmount.Text),
                         Status = textBox_Status.Text
                     }
                 );
+
+
             }
             else
             {
@@ -145,8 +223,8 @@ namespace Program.scr.windows
                     new DBT_Orders()
                     {
                         ID = Object.ID,
-                        ClientID = int.Parse(textBox_ClientID.Text),
-                        EmployeeID = int.Parse(textBox_EmployeeID.Text),
+                        ClientID = Clients[comboBox_ClientID.SelectedIndex].ID,
+                        EmployeeID = Employees[comboBox_EmployeeID.SelectedIndex].ID,
                         OrderDateTime = dateTimePicker_OrderDateTime.Value,
                         TotalAmount = decimal.Parse(textBox_TotalAmount.Text),
                         Status = textBox_Status.Text

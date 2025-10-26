@@ -1,15 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Program.scr.core;
 using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Program.scr.windows
 {
@@ -30,6 +21,7 @@ namespace Program.scr.windows
             this.Disposed += Products_ViewForm_Disposed;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.Size = new Size(1200, 650);
             this.Text = "Товары";
 
             button_create = new Button()
@@ -158,7 +150,7 @@ namespace Program.scr.windows
 
                             var index = dataGridView.Rows.Add();
                             dataGridView.Rows[index].Cells[0].Value = reader.GetInt32(0);
-                            dataGridView.Rows[index].Cells[1].Value = reader.GetInt32(1);
+                            dataGridView.Rows[index].Cells[1].Value = DBT_Suppliers.GetById(reader.GetInt32(1)).CompanyName;
                             dataGridView.Rows[index].Cells[2].Value = reader.GetString(2);
                             if (reader.IsDBNull(3)) dataGridView.Rows[index].Cells[3].Value = "-";
                             else dataGridView.Rows[index].Cells[3].Value = reader.GetString(3);

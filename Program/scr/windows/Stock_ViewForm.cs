@@ -1,15 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Program.scr.core;
 using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Program.scr.windows
 {
@@ -30,6 +21,7 @@ namespace Program.scr.windows
             this.Disposed += Stock_ViewForm_Disposed;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.Size = new Size(1200, 650);
             this.Text = "Склад";
 
             button_create = new Button()
@@ -129,7 +121,7 @@ namespace Program.scr.windows
             dataGridView.Columns.Add("ID", "ID");
             dataGridView.Columns.Add("ProductID", "Товар");
             dataGridView.Columns.Add("QuantityOnStock", "Количество на складе");
-            dataGridView.Columns.Add("LastUpdated", "Дата обновления");
+            dataGridView.Columns.Add("LastUpdated", "Дата изменения");
 
             using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
             {
@@ -152,7 +144,7 @@ namespace Program.scr.windows
 
                             var index = dataGridView.Rows.Add();
                             dataGridView.Rows[index].Cells[0].Value = reader.GetInt32(0);
-                            dataGridView.Rows[index].Cells[1].Value = reader.GetInt32(1);
+                            dataGridView.Rows[index].Cells[1].Value = DBT_Products.GetById(reader.GetInt32(1)).Name;
                             dataGridView.Rows[index].Cells[2].Value = reader.GetDecimal(2);
                             if (reader.IsDBNull(3)) dataGridView.Rows[index].Cells[3].Value = "-";
                             else dataGridView.Rows[index].Cells[3].Value = DateTime.Parse(reader.GetValue(3).ToString());

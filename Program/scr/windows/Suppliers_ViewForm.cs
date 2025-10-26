@@ -21,6 +21,7 @@ namespace Program.scr.windows
             this.Disposed += Suppliers_ViewForm_Disposed;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.Size = new Size(1200, 650);
             this.Text = "Поставщики";
 
             button_create = new Button()
@@ -121,7 +122,7 @@ namespace Program.scr.windows
             dataGridView.Columns.Add("CompanyName", "Компания");
             dataGridView.Columns.Add("ContactPerson", "Контактное лицо");
             dataGridView.Columns.Add("Phone", "Номер телефона");
-            dataGridView.Columns.Add("Email", "Email");
+            dataGridView.Columns.Add("Email", "Электронная почта");
             dataGridView.Columns.Add("Address", "Адрес");
 
             using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))

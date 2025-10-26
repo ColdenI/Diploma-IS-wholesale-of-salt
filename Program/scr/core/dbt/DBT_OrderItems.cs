@@ -1,23 +1,20 @@
 ﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Program.scr.core.dbt
 {
-    public class DBT_Stock
+    public class DBT_OrderItems
     {
         public int ID;
+        public int OrderID;
         public int ProductID;
-        public decimal QuantityOnStock;
-        public DateTime? LastUpdated;
+        public decimal Quantity;
+        public decimal PriceAtOrderTime;
+        public decimal? Subtotal;
 
 
-        public static List<DBT_Stock> GetAll()
+        public static List<DBT_OrderItems> GetByOrderID(int OrderID)
         {
-            var objs = new List<DBT_Stock>();
+            var objs = new List<DBT_OrderItems>();
             try
             {
                 using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
@@ -25,18 +22,21 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "SELECT * FROM Stock";
+                        query.CommandText = "SELECT * FROM OrderItems WHERE OrderID = @id";
+                        query.Parameters.AddWithValue("@id", OrderID);
                         using (var reader = query.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                var obj = new DBT_Stock();
+                                var obj = new DBT_OrderItems();
 
                                 obj.ID = reader.GetInt32(0);
-                                obj.ProductID = reader.GetInt32(1);
-                                obj.QuantityOnStock = reader.GetDecimal(2);
-                                if (reader.IsDBNull(3)) obj.LastUpdated = null;
-                                else obj.LastUpdated = DateTime.Parse(reader.GetValue(3).ToString());
+                                obj.OrderID = reader.GetInt32(1);
+                                obj.ProductID = reader.GetInt32(2);
+                                obj.Quantity = reader.GetDecimal(3);
+                                obj.PriceAtOrderTime = reader.GetDecimal(4);
+                                if (reader.IsDBNull(5)) obj.Subtotal = null;
+                                else obj.Subtotal = reader.GetDecimal(5);
 
                                 objs.Add(obj);
                             }
@@ -47,9 +47,9 @@ namespace Program.scr.core.dbt
             catch { objs = null; }
             return objs;
         }
-        public static DBT_Stock GetById(int id)
+        public static List<DBT_OrderItems> GetByOrderIDAndProductID(int OrderID, int ProductID)
         {
-            var obj = new DBT_Stock();
+            var objs = new List<DBT_OrderItems>();
             try
             {
                 using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
@@ -57,28 +57,35 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "SELECT * FROM Stock WHERE ID = @id";
-                        query.Parameters.AddWithValue("@id", id);
+                        query.CommandText = "SELECT * FROM OrderItems WHERE OrderID = @id and ProductID = @pr_id";
+                        query.Parameters.AddWithValue("@id", OrderID);
+                        query.Parameters.AddWithValue("@pr_id", ProductID);
                         using (var reader = query.ExecuteReader())
                         {
                             while (reader.Read())
                             {
+                                var obj = new DBT_OrderItems();
+
                                 obj.ID = reader.GetInt32(0);
-                                obj.ProductID = reader.GetInt32(1);
-                                obj.QuantityOnStock = reader.GetDecimal(2);
-                                if (reader.IsDBNull(3)) obj.LastUpdated = null;
-                                else obj.LastUpdated = DateTime.Parse(reader.GetValue(3).ToString());
+                                obj.OrderID = reader.GetInt32(1);
+                                obj.ProductID = reader.GetInt32(2);
+                                obj.Quantity = reader.GetDecimal(3);
+                                obj.PriceAtOrderTime = reader.GetDecimal(4);
+                                if (reader.IsDBNull(5)) obj.Subtotal = null;
+                                else obj.Subtotal = reader.GetDecimal(5);
+
+                                objs.Add(obj);
                             }
                         }
                     }
                 }
             }
-            catch { obj = null; }
-            return obj;
+            catch { objs = null; }
+            return objs;
         }
-        public static DBT_Stock GetByProductID(int ProductID)
+        public static DBT_OrderItems GetById(int id)
         {
-            var obj = new DBT_Stock();
+            var obj = new DBT_OrderItems();
             try
             {
                 using (SqlConnection connection = new SqlConnection(SQL._sqlConnectStr))
@@ -86,17 +93,19 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "SELECT * FROM Stock WHERE ProductID = @ProductID";
-                        query.Parameters.AddWithValue("@ProductID", ProductID);
+                        query.CommandText = "SELECT * FROM OrderItems WHERE ID = @id";
+                        
                         using (var reader = query.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 obj.ID = reader.GetInt32(0);
-                                obj.ProductID = reader.GetInt32(1);
-                                obj.QuantityOnStock = reader.GetDecimal(2);
-                                if (reader.IsDBNull(3)) obj.LastUpdated = null;
-                                else obj.LastUpdated = DateTime.Parse(reader.GetValue(3).ToString());
+                                obj.OrderID = reader.GetInt32(1);
+                                obj.ProductID = reader.GetInt32(2);
+                                obj.Quantity = reader.GetDecimal(3);
+                                obj.PriceAtOrderTime = reader.GetDecimal(4);
+                                if (reader.IsDBNull(5)) obj.Subtotal = null;
+                                else obj.Subtotal = reader.GetDecimal(5);
                             }
                         }
                     }
@@ -106,7 +115,7 @@ namespace Program.scr.core.dbt
             return obj;
         }
 
-        public static int Create(DBT_Stock obj)
+        public static int Create(DBT_OrderItems obj)
         {
             try
             {
@@ -115,10 +124,12 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "INSERT INTO Stock VALUES (@ProductID, @QuantityOnStock, @LastUpdated);";
+                        query.CommandText = "INSERT INTO OrderItems VALUES (@OrderID, @ProductID, @Quantity, @PriceAtOrderTime, @Subtotal);";
+                        query.Parameters.AddWithValue("@OrderID", obj.OrderID);
                         query.Parameters.AddWithValue("@ProductID", obj.ProductID);
-                        query.Parameters.AddWithValue("@QuantityOnStock", obj.QuantityOnStock);
-                        query.Parameters.AddWithValue("@LastUpdated", obj.LastUpdated);
+                        query.Parameters.AddWithValue("@Quantity", obj.Quantity);
+                        query.Parameters.AddWithValue("@PriceAtOrderTime", obj.PriceAtOrderTime);
+                        query.Parameters.AddWithValue("@Subtotal", obj.Subtotal);
                         query.ExecuteNonQuery();
                     }
                 }
@@ -127,7 +138,7 @@ namespace Program.scr.core.dbt
             return 0;
         }
 
-        public static int Edit(DBT_Stock obj)
+        public static int Edit(DBT_OrderItems obj)
         {
             try
             {
@@ -136,10 +147,12 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "UPDATE Stock SET ProductID = @ProductID, QuantityOnStock = @QuantityOnStock, LastUpdated = @LastUpdated WHERE ID = @id;";
+                        query.CommandText = "UPDATE OrderItems SET OrderID = @OrderID, ProductID = @ProductID, Quantity = @Quantity, PriceAtOrderTime = @PriceAtOrderTime, Subtotal = @Subtotal WHERE ID = @id;";
+                        query.Parameters.AddWithValue("@OrderID", obj.OrderID);
                         query.Parameters.AddWithValue("@ProductID", obj.ProductID);
-                        query.Parameters.AddWithValue("@QuantityOnStock", obj.QuantityOnStock);
-                        query.Parameters.AddWithValue("@LastUpdated", obj.LastUpdated);
+                        query.Parameters.AddWithValue("@Quantity", obj.Quantity);
+                        query.Parameters.AddWithValue("@PriceAtOrderTime", obj.PriceAtOrderTime);
+                        query.Parameters.AddWithValue("@Subtotal", obj.Subtotal);
                         query.Parameters.AddWithValue("@id", obj.ID);
                         query.ExecuteNonQuery();
                     }
@@ -158,7 +171,7 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "DELETE FROM Stock WHERE ID = @id;";
+                        query.CommandText = "DELETE FROM OrderItems WHERE ID = @id;";
                         query.Parameters.AddWithValue("@id", id);
                         query.ExecuteNonQuery();
                     }

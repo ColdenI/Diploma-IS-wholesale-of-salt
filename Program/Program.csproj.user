@@ -16,6 +16,12 @@
     <Compile Update="scr\windows\Clients_ViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="scr\windows\customListBox\CustomNumericListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="scr\windows\customListBox\LabeledNumericItem.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="scr\windows\Employees_AddEditForm.cs">
       <SubType>Form</SubType>
     </Compile>

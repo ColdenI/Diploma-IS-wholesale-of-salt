@@ -1,13 +1,5 @@
-﻿using Program.scr.core.dbt;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Program.scr.core;
+using Program.scr.core.dbt;
 
 namespace Program.scr.windows
 {
@@ -20,7 +12,7 @@ namespace Program.scr.windows
 
         TextBox textBox_Login;
         TextBox textBox_PasswordHash;
-        TextBox textBox_AccessLevel;
+        ComboBox textBox_AccessLevel;
 
         public Auth_AddEditForm()
         {
@@ -35,12 +27,13 @@ namespace Program.scr.windows
 
             textBox_Login.Text = obj.Login.ToString();
             textBox_PasswordHash.Text = obj.PasswordHash.ToString();
-            textBox_AccessLevel.Text = obj.AccessLevel.ToString();
+            textBox_AccessLevel.Text = Core.arrAccess[obj.AccessLevel + 1];
         }
 
         private void Init()
         {
-            this.Text = "Авторизация - " + Object == null ? "Добавить" : "Изменить";
+            this.Size = new Size(1200, 650);
+            this.Text = "Авторизация - " + (Object == null ? "Добавить" : "Изменить").ToString();
             this.MinimumSize = new Size(400, 400);
             this.StartPosition = FormStartPosition.CenterScreen;
             button_apply = new Button()
@@ -78,10 +71,12 @@ namespace Program.scr.windows
             Label label_AccessLevel = new Label();
             SetLabel(ref label_AccessLevel, "Уровень доступа");
             tableLayout.Controls.Add(label_AccessLevel, 0, 2);
-            textBox_AccessLevel = new TextBox();
+            textBox_AccessLevel = new ComboBox();
             textBox_AccessLevel.Dock = DockStyle.Fill;
             textBox_AccessLevel.MaxLength = 254;
             tableLayout.Controls.Add(textBox_AccessLevel, 1, 2);
+
+            textBox_AccessLevel.Items.AddRange(Core.arrAccess); 
 
             this.Controls.Add(tableLayout);
         }
@@ -100,7 +95,7 @@ namespace Program.scr.windows
         {
             if (string.IsNullOrWhiteSpace(textBox_Login.Text)) { MessageBox.Show("Поле 'Логин' имеет некорректное значение!"); return; }
             if (string.IsNullOrWhiteSpace(textBox_PasswordHash.Text)) { MessageBox.Show("Поле 'Пароль' имеет некорректное значение!"); return; }
-            if (!int.TryParse(textBox_AccessLevel.Text, out int tp_AccessLevel)) { MessageBox.Show("Поле 'Уровень доступа' имеет некорректное значение!"); return; }
+            if (textBox_AccessLevel.SelectedIndex == -1) { MessageBox.Show("Поле 'Уровень доступа' имеет некорректное значение!"); return; }
 
             int res = 0;
 
@@ -111,7 +106,7 @@ namespace Program.scr.windows
                     {
                         Login = textBox_Login.Text,
                         PasswordHash = textBox_PasswordHash.Text,
-                        AccessLevel = int.Parse(textBox_AccessLevel.Text)
+                        AccessLevel = textBox_AccessLevel.SelectedIndex - 1
                     }
                 );
             }
@@ -123,7 +118,7 @@ namespace Program.scr.windows
                         EmployeeID = Object.EmployeeID,
                         Login = textBox_Login.Text,
                         PasswordHash = textBox_PasswordHash.Text,
-                        AccessLevel = int.Parse(textBox_AccessLevel.Text)
+                        AccessLevel = textBox_AccessLevel.SelectedIndex - 1
                     }
                 );
             }

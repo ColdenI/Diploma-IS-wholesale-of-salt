@@ -30,6 +30,7 @@ namespace Program.scr.windows
             this.Disposed += Auth_ViewForm_Disposed;
             this.StartPosition = FormStartPosition.CenterScreen;
 
+            this.Size = new Size(1200, 650);
             this.Text = "Авторизация";
 
             button_create = new Button()
@@ -126,6 +127,7 @@ namespace Program.scr.windows
             dataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
+            dataGridView.Columns.Add("id", "id"); dataGridView.Columns[0].Visible = false;
             dataGridView.Columns.Add("EmployeeID", "Сотрудник");
             dataGridView.Columns.Add("Login", "Логин");
             dataGridView.Columns.Add("PasswordHash", "Пароль");
@@ -150,11 +152,13 @@ namespace Program.scr.windows
                                     !reader.GetValue(3).ToString().Contains(search)
                                 ) continue;
 
+                            
                             var index = dataGridView.Rows.Add();
                             dataGridView.Rows[index].Cells[0].Value = reader.GetInt32(0);
-                            dataGridView.Rows[index].Cells[1].Value = reader.GetString(1);
-                            dataGridView.Rows[index].Cells[2].Value = reader.GetString(2);
-                            dataGridView.Rows[index].Cells[3].Value = reader.GetInt32(3);
+                            dataGridView.Rows[index].Cells[1].Value = DBT_Employees.GetById(reader.GetInt32(0)).FullName;
+                            dataGridView.Rows[index].Cells[2].Value = reader.GetString(1);
+                            dataGridView.Rows[index].Cells[3].Value = reader.GetString(2);
+                            dataGridView.Rows[index].Cells[4].Value = Core.arrAccess[reader.GetInt32(3) + 1];
 
                         }
                     }

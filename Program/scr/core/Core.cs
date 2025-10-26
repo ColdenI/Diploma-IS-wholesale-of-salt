@@ -11,5 +11,7 @@ namespace Program.scr.core
     {
         public static DBT_Employees ThisEmployee;
         public static int AccessLevel = -1;
+
+        public static string[] arrAccess = { "Нет доступа", "Админ", "Менеджер по заказам", "Менеджер по услугам" };
     }
 }
