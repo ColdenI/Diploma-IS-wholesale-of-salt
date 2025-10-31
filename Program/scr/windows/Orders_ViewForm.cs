@@ -144,17 +144,6 @@ namespace Program.scr.windows
                     {
                         while (reader.Read())
                         {
-                            string search = textBox_search.Text.ToLower();
-                            if (!string.IsNullOrWhiteSpace(search))
-                                if (
-                                    !reader.GetValue(0).ToString().Contains(search) &&
-                                    !reader.GetValue(1).ToString().Contains(search) &&
-                                    !reader.GetValue(2).ToString().Contains(search) &&
-                                    !reader.GetValue(3).ToString().Contains(search) &&
-                                    !reader.GetValue(4).ToString().Contains(search) &&
-                                    !reader.GetValue(5).ToString().Contains(search)
-                                ) continue;
-
                             var index = dataGridView.Rows.Add();
                             dataGridView.Rows[index].Cells[0].Value = reader.GetInt32(0);
                             dataGridView.Rows[index].Cells[1].Value = DBT_Clients.GetById(reader.GetInt32(1)).FullName;
@@ -175,6 +164,18 @@ namespace Program.scr.windows
                             dataGridView.Rows[index].Cells[6].Value = products;
                             dataGridView.Rows[index].Cells[4].Value = total;
 
+                            string search = textBox_search.Text.ToLower();
+                            if (!string.IsNullOrWhiteSpace(search))
+                                if (
+                                    !dataGridView.Rows[index].Cells[0].Value.ToString().ToLower().Contains(search) &&
+                                    !dataGridView.Rows[index].Cells[1].Value.ToString().ToLower().Contains(search) &&
+                                    !dataGridView.Rows[index].Cells[2].Value.ToString().ToLower().Contains(search) &&
+                                    !dataGridView.Rows[index].Cells[3].Value.ToString().ToLower().Contains(search) &&
+                                    !dataGridView.Rows[index].Cells[4].Value.ToString().ToLower().Contains(search) &&
+                                    !dataGridView.Rows[index].Cells[5].Value.ToString().ToLower().Contains(search) &&
+                                    !dataGridView.Rows[index].Cells[6].Value.ToString().ToLower().Contains(search)
+
+                                ) dataGridView.Rows.RemoveAt(index);
                         }
                     }
                 }
