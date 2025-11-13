@@ -84,7 +84,8 @@ namespace Program.scr.core.dbt
                     connection.Open();
                     using (var query = connection.CreateCommand())
                     {
-                        query.CommandText = "INSERT INTO Auth VALUES (@Login, @PasswordHash, @AccessLevel);";
+                        query.CommandText = "INSERT INTO Auth VALUES (@EmployeeID, @Login, @PasswordHash, @AccessLevel);";
+                        query.Parameters.AddWithValue("@EmployeeID", obj.EmployeeID);
                         query.Parameters.AddWithValue("@Login", obj.Login);
                         query.Parameters.AddWithValue("@PasswordHash", obj.PasswordHash);
                         query.Parameters.AddWithValue("@AccessLevel", obj.AccessLevel);

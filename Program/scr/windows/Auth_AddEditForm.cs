@@ -13,6 +13,9 @@ namespace Program.scr.windows
         TextBox textBox_Login;
         TextBox textBox_PasswordHash;
         ComboBox textBox_AccessLevel;
+        ComboBox comboBox_EmployeeID;
+
+        private List<DBT_Employees> Employees = new List<DBT_Employees>();
 
         public Auth_AddEditForm()
         {
@@ -25,11 +28,28 @@ namespace Program.scr.windows
             Object = obj;
             Init();
 
+            comboBox_EmployeeID.SelectedIndex = indexOf_Employees(obj.EmployeeID);
+            if (Object != null) comboBox_EmployeeID.Enabled = false;
             textBox_Login.Text = obj.Login.ToString();
             textBox_PasswordHash.Text = obj.PasswordHash.ToString();
             textBox_AccessLevel.Text = Core.arrAccess[obj.AccessLevel + 1];
         }
+        private void LoadComboBox_Employees()
+        {
+            Employees = DBT_Employees.GetAll();
 
+            comboBox_EmployeeID.Items.Clear();
+            foreach (var i in Employees)
+                comboBox_EmployeeID.Items.Add(i.FullName);
+        }
+        private int indexOf_Employees(int id)
+        {
+            for (int i = 0; i < Employees.Count; i++)
+            {
+                if (Employees[i].ID == id) return i;
+            }
+            return -1;
+        }
         private void Init()
         {
             this.Size = new Size(1200, 650);
@@ -49,32 +69,41 @@ namespace Program.scr.windows
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
-                RowCount = 3
+                RowCount = 4
             };
+
+            Label label_EmployeeID = new Label();
+            SetLabel(ref label_EmployeeID, "Сотрудник");
+            tableLayout.Controls.Add(label_EmployeeID, 0, 0);
+            comboBox_EmployeeID = new ComboBox();
+            comboBox_EmployeeID.Dock = DockStyle.Fill;
+            comboBox_EmployeeID.MaxLength = 254;
+            tableLayout.Controls.Add(comboBox_EmployeeID, 1, 0);
+            LoadComboBox_Employees();
 
             Label label_Login = new Label();
             SetLabel(ref label_Login, "Логин");
-            tableLayout.Controls.Add(label_Login, 0, 0);
+            tableLayout.Controls.Add(label_Login, 0, 1);
             textBox_Login = new TextBox();
             textBox_Login.Dock = DockStyle.Fill;
             textBox_Login.MaxLength = 254;
-            tableLayout.Controls.Add(textBox_Login, 1, 0);
+            tableLayout.Controls.Add(textBox_Login, 1, 1);
 
             Label label_PasswordHash = new Label();
             SetLabel(ref label_PasswordHash, "Пароль");
-            tableLayout.Controls.Add(label_PasswordHash, 0, 1);
+            tableLayout.Controls.Add(label_PasswordHash, 0, 2);
             textBox_PasswordHash = new TextBox();
             textBox_PasswordHash.Dock = DockStyle.Fill;
             textBox_PasswordHash.MaxLength = 254;
-            tableLayout.Controls.Add(textBox_PasswordHash, 1, 1);
+            tableLayout.Controls.Add(textBox_PasswordHash, 1, 2);
 
             Label label_AccessLevel = new Label();
             SetLabel(ref label_AccessLevel, "Уровень доступа");
-            tableLayout.Controls.Add(label_AccessLevel, 0, 2);
+            tableLayout.Controls.Add(label_AccessLevel, 0, 3);
             textBox_AccessLevel = new ComboBox();
             textBox_AccessLevel.Dock = DockStyle.Fill;
             textBox_AccessLevel.MaxLength = 254;
-            tableLayout.Controls.Add(textBox_AccessLevel, 1, 2);
+            tableLayout.Controls.Add(textBox_AccessLevel, 1, 3);
 
             textBox_AccessLevel.Items.AddRange(Core.arrAccess); 
 
@@ -93,6 +122,7 @@ namespace Program.scr.windows
 
         private void Button_apply_Click(object? sender, EventArgs e)
         {
+            if (comboBox_EmployeeID.SelectedIndex == -1) { MessageBox.Show("Поле 'Сотрудник' имеет некорректное значение!"); return; }
             if (string.IsNullOrWhiteSpace(textBox_Login.Text)) { MessageBox.Show("Поле 'Логин' имеет некорректное значение!"); return; }
             if (string.IsNullOrWhiteSpace(textBox_PasswordHash.Text)) { MessageBox.Show("Поле 'Пароль' имеет некорректное значение!"); return; }
             if (textBox_AccessLevel.SelectedIndex == -1) { MessageBox.Show("Поле 'Уровень доступа' имеет некорректное значение!"); return; }
@@ -104,6 +134,7 @@ namespace Program.scr.windows
                 res = DBT_Auth.Create(
                     new DBT_Auth()
                     {
+                        EmployeeID = Employees[comboBox_EmployeeID.SelectedIndex].ID,
                         Login = textBox_Login.Text,
                         PasswordHash = textBox_PasswordHash.Text,
                         AccessLevel = textBox_AccessLevel.SelectedIndex - 1
