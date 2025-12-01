@@ -39,6 +39,7 @@
             button9 = new Button();
             flowLayoutPanel1 = new FlowLayoutPanel();
             label1 = new Label();
+            button10 = new Button();
             flowLayoutPanel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -144,9 +145,10 @@
             flowLayoutPanel1.Controls.Add(button3);
             flowLayoutPanel1.Controls.Add(button4);
             flowLayoutPanel1.Controls.Add(button5);
+            flowLayoutPanel1.Controls.Add(button10);
             flowLayoutPanel1.Location = new Point(16, 44);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(484, 192);
+            flowLayoutPanel1.Size = new Size(486, 249);
             flowLayoutPanel1.TabIndex = 9;
             // 
             // label1
@@ -158,11 +160,21 @@
             label1.TabIndex = 10;
             label1.Text = "label1";
             // 
+            // button10
+            // 
+            button10.Location = new Point(3, 186);
+            button10.Name = "button10";
+            button10.Size = new Size(153, 55);
+            button10.TabIndex = 9;
+            button10.Text = "Сформировать отчёт";
+            button10.UseVisualStyleBackColor = true;
+            button10.Click += button10_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(514, 249);
+            ClientSize = new Size(514, 320);
             Controls.Add(label1);
             Controls.Add(flowLayoutPanel1);
             Name = "MainForm";
@@ -187,5 +199,6 @@
         private Button button9;
         private FlowLayoutPanel flowLayoutPanel1;
         private Label label1;
+        private Button button10;
     }
 }

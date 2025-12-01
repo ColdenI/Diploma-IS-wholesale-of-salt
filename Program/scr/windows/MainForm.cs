@@ -1,4 +1,6 @@
-﻿namespace Program.scr.windows
+﻿using Program.scr.core;
+
+namespace Program.scr.windows
 {
     public partial class MainForm : Form
     {
@@ -15,6 +17,7 @@
             button7.Visible = false;
             button8.Visible = false;
             button9.Visible = false;
+            button10.Visible = false;
 
             if (core.Core.AccessLevel == 0)
             {
@@ -27,6 +30,7 @@
                 button7.Visible = true;
                 button8.Visible = true;
                 button9.Visible = true;
+                button10.Visible = true;
             }
             if (core.Core.AccessLevel == 1)
             {
@@ -95,6 +99,11 @@
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+new PeriodSelectionForm().ShowDialog();
         }
     }
 }

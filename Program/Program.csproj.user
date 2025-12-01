@@ -37,6 +37,9 @@
     <Compile Update="scr\windows\Orders_ViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="scr\windows\PeriodSelectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="scr\windows\Products_AddEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
