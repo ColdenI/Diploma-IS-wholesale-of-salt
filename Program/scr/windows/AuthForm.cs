@@ -68,7 +68,9 @@ namespace Program
                                     else
                                     {
                                         this.Hide();
-                                        new MainForm().ShowDialog();
+
+                                        if(Core.AccessLevel == 3) new LagerverwalterForm().ShowDialog();
+                                        else new MainForm().ShowDialog();
                                         this.Show();
                                     }
                                 }

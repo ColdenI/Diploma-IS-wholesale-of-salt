@@ -28,6 +28,9 @@
     <Compile Update="scr\windows\Employees_ViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="scr\windows\LagerverwalterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="scr\windows\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
