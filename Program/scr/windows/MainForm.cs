@@ -103,7 +103,7 @@ namespace Program.scr.windows
 
         private void button10_Click(object sender, EventArgs e)
         {
-new PeriodSelectionForm().ShowDialog();
+            new PeriodSelectionForm().ShowDialog();
         }
     }
 }

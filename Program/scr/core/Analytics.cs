@@ -53,15 +53,19 @@ namespace Program.scr.core
         /// <param name="startDate">Начало периода (включительно).</param>
         /// <param name="endDate">Конец периода (включительно).</param>
         /// <param name="outputFilePath">Путь к файлу для сохранения HTML-отчёта.</param>
-        public void GenerateAnalyticsReport(DateTime startDate, DateTime endDate, string outputFilePath)
+        public string GenerateAnalyticsReport(DateTime startDate, DateTime endDate, string outputFilePath = null)
         {
             var stats = GetAnalyticsData(startDate, endDate);
 
             string htmlReport = BuildHtmlReport(stats);
 
-            File.WriteAllText(outputFilePath, htmlReport, Encoding.UTF8);
+            if (outputFilePath != null)
+            {
+                File.WriteAllText(outputFilePath, htmlReport, Encoding.UTF8);
+                Console.WriteLine($"Отчёт успешно сгенерирован и сохранён в {outputFilePath}");
+            }
 
-            Console.WriteLine($"Отчёт успешно сгенерирован и сохранён в {outputFilePath}");
+            return htmlReport;
         }
 
         /// <summary>

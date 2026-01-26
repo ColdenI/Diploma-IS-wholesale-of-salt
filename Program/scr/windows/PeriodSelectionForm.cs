@@ -116,9 +116,13 @@ namespace Program.scr.windows
             var dataService = new DataService();
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "HTML (*.html)|*.html";
-            if (saveFileDialog.ShowDialog() == DialogResult.Cancel) return;
-            dataService.GenerateAnalyticsReport(StartDate, EndDate, saveFileDialog.FileName);
-            // Закрытие формы с результатом OK произойдет автоматически благодаря DialogResult.OK у кнопки.
+            string path = null;
+            if (saveFileDialog.ShowDialog() != DialogResult.Cancel) path = saveFileDialog.FileName;
+
+
+            new AnalyticViewForm(dataService.GenerateAnalyticsReport(StartDate, EndDate, path)).ShowDialog();
+
+
         }
     }
 }
